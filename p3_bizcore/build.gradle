@@ -1,0 +1,9 @@
+
+project(':p3_bizcore') {
+    group 'com.cloud'
+    version '1.0-SNAPSHOT'
+
+    dependencies {
+        compile project(':sys_biz')
+    }
+}

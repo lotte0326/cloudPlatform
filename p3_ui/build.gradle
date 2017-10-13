@@ -1,0 +1,5 @@
+
+project(':p3_ui') {
+    group 'com.cloud'
+    version '1.0-SNAPSHOT'
+}

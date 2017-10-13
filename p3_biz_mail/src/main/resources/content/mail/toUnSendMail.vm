@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 收件箱</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="$!{basePath}/plug-in-ui/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/animate.css" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/style.css?v=4.1.0" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        #parse("content/mail/main/left.vm")
+        <div class="col-sm-9 animated fadeInRight">
+            <div class="mail-box-header">
+
+                #*<form method="get" action="index.html" class="pull-right mail-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-sm" name="search" placeholder="搜索邮件标题，正文等">
+                        <div class="input-group-btn">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+                </form>*#
+                <h2>
+                    草稿箱
+                </h2>
+                <div class="mail-tools tooltip-demo m-t-md">
+                    #*<div class="btn-group pull-right">
+                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-left"></i>
+                        </button>
+                        <button class="btn btn-white btn-sm"><i class="fa fa-arrow-right"></i>
+                        </button>
+
+                    </div>*#
+                    <button class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="top" title="查看" onclick="viewMail()"><i class="fa fa-search"></i> 查看</button>
+                    <a class="btn btn-warning btn-sm" data-toggle="tooltip" data-placement="top" title="编辑" onclick="updateMail()"><i class="fa fa-search"></i> 编辑</a>
+                    <button class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="top" title="删除" onclick="deleteMail()"><i class="fa fa-trash-o"></i> 删除</button>
+
+                </div>
+            </div>
+            <div class="mail-box">
+
+                <table class="table table-hover table-mail">
+                    <thead>
+                        <tr>
+                            <td style="display: none;"></td>
+                            <td></td>
+                            <td>主题</td>
+                            <td>收件人</td>
+                            <td>创建日期</td>
+                            <td>操作</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        #if($!{pageInfos})
+                            #foreach($!{info} in $!{pageInfos})
+                            <tr class="unread">
+                                <td style="display: none;">$!{info.id}</td>
+                                <td><input class="i-checks" type="checkbox"/></td>
+                                <td>$!{info.title}</td>
+                                <td>$!{info.receiverNames}</td>
+                                <td>$!{info.createDate}</td>
+                                <td>$!{info.status}</td>
+                                <td><button type="button" class="btn btn-xs btn-danger" onclick="deleteThis($(this))">删除</button></td>
+                            </tr>
+                            #end
+                        #end
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 全局js -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/jquery.min.js?v=2.1.4"></script>
+<script src="$!{basePath}/plug-in-ui/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+
+
+
+<!-- 自定义js -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/content.js?v=1.0.0"></script>
+
+
+<!-- iCheck -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/plugins/iCheck/icheck.min.js"></script>
+<!-- layer -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/plugins/layer/layer.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+
+        $("tr").on("click",function(){
+            $(this).find("td:eq(1)").find("input").iCheck('toggle');
+        })
+    });
+    function viewMail(){
+        var checkedCount = $("input:checked").length;
+        if(checkedCount == 0){
+            layer.msg("请选择一条记录");
+            return;
+        }
+        if(checkedCount>1){
+            layer.msg("只能查看一条记录");
+            return;
+        }
+        var id = $("input:checked").parent().parent().siblings("td").eq("0").text();
+        var index = layer.open({
+            type: 2,
+            title: '邮件详情',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '95%'],
+            content: '$!{basePath}/mail/p3MailJformInnerMail.do?toUnSendMailDetail&id='+id //iframe的url
+        });
+    }
+
+    function deleteMail(){
+        var checkedCount = $("input:checked").length;
+        if(checkedCount == 0){
+            layer.msg("请选择至少一条记录");
+            return;
+        }
+        var ids = "";
+        $("input:checked").each(function(){
+            ids += $(this).parent().parent().siblings("td").eq("0").text()+",";
+        })
+        //询问框
+        layer.confirm('确定要删除这条邮件？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            jQuery.post('$!{basePath}/mail/p3MailJformInnerMail.do?doUnSendMailDelete', {
+                "ids":ids.substring(0,ids.length-1)
+            }, function (data) {
+                var d = jQuery.parseJSON(data);
+                if (d.success) {
+                    layer.confirm(d.msg, {
+                        btn: ['确定'] //按钮
+                    }, function(){
+                        location.reload();
+                    });
+                }
+            });
+        }, function(){
+        });
+    }
+
+    function deleteThis(mail){
+        var ids = mail.parent().siblings("td").eq(0).text();
+        //询问框
+        layer.confirm('确定要删除这条邮件？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            jQuery.post('$!{basePath}/mail/p3MailJformInnerMail.do?doUnSendMailDelete', {
+                "ids":ids
+            }, function (data) {
+                var d = jQuery.parseJSON(data);
+                if (d.success) {
+                    layer.confirm(d.msg, {
+                        btn: ['确定'] //按钮
+                    }, function(){
+                        location.reload();
+                    });
+                }
+            });
+        })
+    }
+    function updateMail(){
+        var checkedCount = $("input:checked").length;
+        if(checkedCount == 0){
+            layer.msg("请选择一条记录");
+            return;
+        }
+        if(checkedCount>1){
+            layer.msg("只能编辑一条记录");
+            return;
+        }
+        var id = $("input:checked").parent().parent().siblings("td").eq("0").text();
+        location.href="$!{basePath}/mail/p3MailJformInnerMail.do?toUnSendMailUpdate&id="+id;
+        /*var index = layer.open({
+            type: 2,
+            title: '邮件编辑',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '95%'],
+            content: '$!{basePath}/mail/p3MailJformInnerMail.do?toUnSendMailUpdate&id='+id //iframe的url
+        });*/
+    }
+</script>
+
+</body>
+
+</html>

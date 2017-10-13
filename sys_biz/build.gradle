@@ -1,0 +1,13 @@
+
+// 系统核心组件
+
+project(':sys_biz') {
+    group 'com.cloud'
+    version '1.0-SNAPSHOT'
+
+    dependencies {
+        compile project(':commons')
+        compile("org.apache.velocity:velocity:1.6.4",
+                "org.apache.velocity:velocity-tools:2.0")
+    }
+}

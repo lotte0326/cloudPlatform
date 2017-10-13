@@ -1,0 +1,6 @@
+
+//公共依赖组件
+project(':commons') {
+    group 'com.cloud'
+    version '1.0-SNAPSHOT'
+}

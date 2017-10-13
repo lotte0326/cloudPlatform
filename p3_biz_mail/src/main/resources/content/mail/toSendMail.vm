@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 写信</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+    <link rel="shortcut icon" href="favicon.ico"> <link href="$!{basePath}/plug-in-ui/hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/plugins/summernote/summernote.css" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/animate.css" rel="stylesheet">
+    <link href="$!{basePath}/plug-in-ui/hplus/css/style.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .note-editable{
+            height:300px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        #parse("content/mail/main/left.vm")
+        <div class="col-sm-9 animated fadeInRight">
+            <div class="mail-box-header">
+                <div class="pull-right tooltip-demo">
+                    <a onclick="saveMail('01')" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="发送"><i class="fa fa-reply"></i> 发送</a>
+                    <a onclick="saveMail('00')" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="存为草稿"><i class="fa fa-pencil"></i> 存为草稿</a>
+                </div>
+                <h2>
+                    写信
+                </h2>
+            </div>
+            <div class="mail-box">
+
+
+                <div class="mail-body">
+
+                    <form class="form-horizontal" method="get">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">发送到：</label>
+
+                            <div class="col-sm-6">
+                                <input type="hidden" id="receiverIds"/>
+                                <input type="text" class="form-control" id="receiverNames">
+                            </div>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="getUsers()"><i class="fa fa-search"></i> 选择</button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="reset()"><i class="fa fa-trash-o"></i> 清空</button>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">主题：</label>
+
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="title">
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <div class="mail-text h-200">
+                    <div class="summernote">
+
+                    </div>
+                </div>
+                <div class="mail-body text-right tooltip-demo">
+                    <a onclick="saveMail('01')" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="top" title="发送"><i class="fa fa-reply"></i> 发送</a>
+                    <a onclick="saveMail('00')" class="btn btn-white btn-sm" data-toggle="tooltip" data-placement="top" title="存为草稿"><i class="fa fa-pencil"></i> 存为草稿</a>
+                </div>
+                <div class="clearfix"></div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/jquery.min.js?v=2.1.4"></script>
+<script src="$!{basePath}/plug-in-ui/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+
+<!-- 自定义js -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/content.js?v=1.0.0"></script>
+
+<!-- iCheck -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/plugins/iCheck/icheck.min.js"></script>
+
+<!-- layer -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/plugins/layer/layer.min.js"></script>
+
+<!-- SUMMERNOTE -->
+<script src="$!{basePath}/plug-in-ui/hplus/js/plugins/summernote/summernote.min.js"></script>
+<script src="$!{basePath}/plug-in-ui/hplus/js/plugins/summernote/summernote-zh-CN.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.summernote').summernote({
+            lang: 'zh-CN',
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['style']],
+                ['font', ["bold","italic","underline","clear"]],
+                ["fontname",["fontname"]],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ["table",["table"]],
+                /*["insert",["link","picture","video"]],*/
+                ["view",["fullscreen","codeview"]]
+                /*["help",["help"]]*/
+            ]
+        });
+    });
+
+    var edit = function () {
+        $('.click2edit').summernote({
+            focus: true
+        });
+    };
+    var save = function () {
+        var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
+        $('.click2edit').destroy();
+    };
+
+    function saveMail(status){
+        var content =  $(".note-editable").html();
+        var receiverNames = $("#receiverNames").val();
+        var title = $("#title").val();
+        var receiverIds = $("#receiverIds").val();
+        if(receiverNames==""||title==""){
+            layer.msg("收信人和主题不能为空");
+        }else{
+            jQuery.post('$!{basePath}/mail/p3MailJformInnerMail.do?doSave', {
+                "content":content,
+                "receiverNames":receiverNames,
+                "title":title,
+                "status":status,
+                "receiverIds":receiverIds
+            }, function (data) {
+                var d = jQuery.parseJSON(data);
+                if (d.success) {
+                    layer.alert(d.msg,{
+                        closeBtn: 0
+                    },function(){
+                        layer.confirm('再写一封？', {
+                            btn: ['确定','取消'] //按钮
+                        }, function(){
+                            location.reload();
+                        }, function(){
+                            location.href = "$!{basePath}/mail/p3MailJformInnerMail.do?toSendedMail";
+                        });
+                    });
+                }
+            });
+        }
+    };
+
+    function getUsers(){
+        var index = layer.open({
+            type: 2,
+            title: '用户选择',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '95%'],
+            content: '$!{basePath}/mail/p3MailTSBaseUser.do?list' //iframe的url
+        });
+    }
+    function reset(){
+        $("#receiverNames").val();
+    }
+</script>
+</body>
+
+</html>

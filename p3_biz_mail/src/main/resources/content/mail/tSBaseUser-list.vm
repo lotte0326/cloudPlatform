@@ -1,0 +1,80 @@
+#parse("content/base/back/common/macro.vm")
+<!DOCTYPE html>
+<html lang="en">
+#parse("content/base/back/common/head.vm")
+<body style='overflow:scroll;overflow-x:hidden'>
+	<div class="container bs-docs-container" style="width:100%;">
+		<div class="row">
+			<form role="form" class="form-inline" id="formSubmit">
+				<div  class="col-md-10" style="width:100%">
+					<div class="panel panel-default">
+					  <div class="panel-body" style="padding:0;">
+							<table class="table table-striped">
+								<thead>
+									<th>操作</th>
+									#*<th>ID</th>*#
+									<th>真实姓名</th>
+									<th>用户名</th>
+								</thead>
+								<tobody>
+								  #if($!{pageInfos})
+									#foreach($!{info} in $!{pageInfos})
+										<tr>
+											<td><input type="checkbox" onclick="check($(this))"/></td>
+											<td style="display: none;">$!{info.id}</td>
+											<td>$!{info.realname}</td>
+											<td>$!{info.username}</td>
+										</tr>
+									 #end
+								 #end
+								 </tobody>
+							</table>
+							<div class="text-right">
+								<!--公用翻页代码-->
+								#set($attr='formSubmit')
+								#showPageList($pageInfos $attr)
+								<!--END公用翻页代码-->
+							</div>
+					  </div>
+					</div>
+				</div>  
+			</form>
+		</div>
+        <button type="button" class="btn btn-sm btn-primary" style="margin: 0 10px 10px 0;float: right;" onclick="cancel()">取消</button>
+        <button type="button" class="btn btn-sm btn-primary" style="margin: 0 10px 10px 0;float: right;" onclick="ok()">确定</button>
+	</div>
+	<script>
+        var index = parent.layer.getFrameIndex(window.name);
+		$("tr").on("click",function(){
+			if($(this).find("td:eq(0)").find("input").prop("checked")){
+                $(this).find("td:eq(0)").find("input").prop("checked",false);
+			}else{
+                $(this).find("td:eq(0)").find("input").prop("checked",true);
+			}
+		})
+		var ids = "";
+		var usernames = "";
+		function ok(){
+			$("input[type='checkbox']").each(function(){
+				if($(this).prop("checked")){
+					ids += $(this).parent().next("td").text()+",";
+					usernames += $(this).parent().siblings("td").eq("1").text()+",";
+				}
+			})
+            parent.$("#receiverNames").val(usernames.substring(0,usernames.length-1));
+            parent.$("#receiverIds").val(ids.substring(0,ids.length-1));
+            parent.layer.close(index);
+		}
+		function cancel(){
+            parent.layer.close(index);
+        }
+		function check(data){
+            if(data.prop("checked")){
+                data.prop("checked",false);
+            }else{
+                data.prop("checked",true);
+            }
+		}
+	</script>
+</body>
+</html>

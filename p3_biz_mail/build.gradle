@@ -1,0 +1,10 @@
+
+//插件：我的邮箱
+project(':p3_biz_mail') {
+    group 'com.cloud'
+    version '1.0-SNAPSHOT'
+
+    dependencies {
+        compile project(':sys_biz')
+    }
+}

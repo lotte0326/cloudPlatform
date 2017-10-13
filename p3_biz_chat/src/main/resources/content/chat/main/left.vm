@@ -1,0 +1,88 @@
+<div class="col-sm-3">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content mailbox-content">
+            <div class="file-manager">
+                <a class="btn btn-block btn-primary compose-mail" href="$!{basePath}/mail/p3MailJformInnerMail.do?toSendMail">写信</a>
+                <div class="space-25"></div>
+                <h5>文件夹</h5>
+                <ul class="folder-list m-b-md" style="padding: 0">
+                    <li>
+                        <a href="$!{basePath}/mail/p3MailJformInnerMail.do?toReceivedMail"> <i class="fa fa-inbox "></i> 收件箱 <span class="label label-warning pull-right" id="receivedCount"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="$!{basePath}/mail/p3MailJformInnerMail.do?toSendedMail"> <i class="fa fa-envelope-o"></i> 发信<span class="label label-warning pull-right" id="sendedCount"></span></a>
+                    </li>
+                    <li>
+                        <a href="#"> <i class="fa fa-certificate"></i> 重要</a>
+                    </li>
+                    <li>
+                        <a href="$!{basePath}/mail/p3MailJformInnerMail.do?toUnSendMail"> <i class="fa fa-file-text-o"></i> 草稿 <span class="label label-danger pull-right" id="unSendedCount"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="$!{basePath}/mail/p3MailJformInnerMail.do?toDeletedMail"> <i class="fa fa-trash-o"></i> 垃圾箱<span class="label label-danger pull-right" id="deletedCount"></a>
+                    </li>
+                </ul>
+                <h5>分类</h5>
+                <ul class="category-list" style="padding: 0">
+                    <li>
+                        <a href="#"> <i class="fa fa-circle text-navy"></i> 工作</a>
+                    </li>
+                    <li>
+                        <a href="#"> <i class="fa fa-circle text-danger"></i> 文档</a>
+                    </li>
+                    <li>
+                        <a href="#"> <i class="fa fa-circle text-primary"></i> 社交</a>
+                    </li>
+                    <li>
+                        <a href="#"> <i class="fa fa-circle text-info"></i> 广告</a>
+                    </li>
+                    <li>
+                        <a href="#"> <i class="fa fa-circle text-warning"></i> 客户端</a>
+                    </li>
+                </ul>
+
+                <h5 class="tag-title">标签</h5>
+                <ul class="tag-list" style="padding: 0">
+                    <li><a href="#"><i class="fa fa-tag"></i> 朋友</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-tag"></i> 工作</a>
+                    </li>
+                    <li><a href=#"><i class="fa fa-tag"></i> 家庭</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-tag"></i> 孩子</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-tag"></i> 假期</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-tag"></i> 音乐</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-tag"></i> 照片</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-tag"></i> 电影</a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="$!{basePath}/plug-in-ui/hplus/js/jquery.min.js?v=2.1.4"></script>
+<script>
+    jQuery(function(){
+        jQuery.post('$!{basePath}/mail/p3MailJformInnerMail.do?menuCount', {
+
+        }, function (data) {
+            var json = eval("("+data+")");
+            var result = json.attributes;
+            var receivedCount = result["receivedCount"];
+            var sendedCount = result["sendedCount"];
+            var unSendedCount = result["unSendedCount"];
+            var deletedCount = result["deletedCount"];
+            $("#receivedCount").text(receivedCount);
+            $("#sendedCount").text(sendedCount);
+            $("#unSendedCount").text(unSendedCount);
+            $("#deletedCount").text(deletedCount);
+        });
+    })
+</script>

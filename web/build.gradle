@@ -1,0 +1,39 @@
+project(':web') {
+    apply plugin: 'war'
+    //apply from: 'https://raw.github.com/akhikhl/gretty/master/pluginScripts/gretty.plugin'
+    //apply plugin: 'org.akhikhl.gretty'
+
+
+    buildscript {
+        repositories {
+            jcenter()
+        }
+        dependencies {
+            classpath 'org.akhikhl.gretty:gretty:1.4.0'
+        }
+    }
+    // gretty相关配置
+    /*gretty {
+        port = 8080
+        contextPath ="/${project.name}"
+        servletContainer = 'jetty9'  //or tomcat7
+    }*/
+
+    // 部署war到tomcat的Task
+    task deploy_tomcat(dependsOn: war) {
+        copy {
+            from "build/libs"
+            into "D:/apache-tomcat-7.0.26/webapps"
+            include "*.war"
+        }
+    }
+
+    dependencies {
+        compile project(':sys_biz')
+        compile project(':p3_biz_chat') //插件：在线聊天
+        compile project(':p3_biz_mail') //插件：我的邮箱
+        compile project(':p3_biz_demo') //案例：demo
+        compile project(':p3_ui')
+        compile project(':p3_bizcore')
+    }
+}

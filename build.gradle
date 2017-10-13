@@ -1,0 +1,280 @@
+allprojects {
+    group 'com.cloud'
+    version '1.0-SNAPSHOT'
+    apply plugin: 'idea'
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    sourceCompatibility = 1.7
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+}
+
+
+subprojects {
+    ext {
+        spring_version = "4.0.9.RELEASE"
+        guava_version = "16.0.1"
+        hibernate_version = "4.1.0.Final"
+        hibernate_jpa_version = "1.0.1.Final"
+        hibernate_common_annotations_version = "4.0.2.Final"
+        // 辅助依赖包
+        cglib_version = "2.2"
+        aspectj_version = "1.6.9"
+        jodd_version = "3.3.7"
+        javassist_version = "3.15.0-GA"
+        ant_version = "1.6.5"
+        // 工具包
+        jackson_version = "1.8.4"
+        jacksonframework_version = "1.84"
+        ezmorph_version = "1.0.3"
+        fastjson_lib_version = "1.2.6"
+        gson_version = "2.2.4"
+        dom4j_version = "1.6.1"
+        slf4j_version = "1.6.1"
+        log4j_version = "1.2.16"
+        classmate_version = "0.5.4"
+        commons_beanutils_version = "1.7.0"
+        commons_collections_version = "3.2.1"
+        commons_chain_version = "1.2"
+        commons_codec_version = "1.9"
+        commons_digester_version = "2.0"
+        commons_io_version = "2.5"
+        commons_fileupload_version = "1.2.1"
+        commons_lang_version = "2.6"
+        commons_lang3_version = "3.1"
+        commons_email_version = "1.2"
+        commons_logging_version = "1.0.4"
+        commons_logging_api_version = "1.1"
+        commons_validator_version = "1.3.1"
+        ehcache_version = "2.4.3"
+        freemarker_version = "2.3.19"
+        hibernate_validator_version = "4.2.0.Final"
+        poi_version = "3.9"
+        antlr_version = "3.3"
+        openoffice_version = "3.2.1"
+        jodconverter_version = "3.0-beta-4"
+        xwork_core_version = "2.1.6"
+        // 数据库组件包
+        proxool_version = "0.9.1"
+        commons_pool_version = "1.6"
+        commons_dbcp_version = "1.4"
+        druid_version = "0.2.9"
+        mysql_version = "5.1.27"
+        ojdbc5_version = "11.2.0.3"
+        jtds_version = "1.2.4"
+        h2_version = "1.3.170"
+        postgresql_version = "9.1-903.jdbc4"
+        // 测试依赖包
+        junit_version = "4.7"
+        hamcrest_version = "1.3"
+        // java生成缩略图
+        thumbnailator_version = "0.4.6"
+        pinyin4j_version = "2.5.0"
+        org_quartz_version = "1.6.2"
+        activation_version = "1.1.1"
+        aopalliance_version = "1.0"
+        xstream_version = "1.4.4"
+        groovy_version = "2.3.3"
+        cxf_version = "3.0.2"
+    }
+
+    buildscript {
+        repositories {
+            mavenCentral()
+        }
+    }
+
+    //公共仓库配置
+    repositories {
+        jcenter()
+        mavenCentral()
+        flatDir(dir: '../libs', name: 'libs directory')
+    }
+
+    //公共编译配置
+    processResources {
+        from('src/main/java') {
+            include '**/*'
+            exclude '**/*.java'
+        }
+        copy{
+            from('src/main/resources') {
+                include('**/*')
+            }
+            into("$buildDir/classes/main")
+        }
+    }
+
+    //公共编译配置测试
+    processTestResources {
+        from('src/test/java') {
+            include '**/*'
+            exclude '**/*.java'
+        }
+        copy{
+            from('src/test/resources') {
+                include('**/*')
+            }
+            into("$buildDir/classes/test")
+        }
+    }
+
+    //公共打包任务
+    task jarWithoutResources(type: Jar) {
+        baseName project.name
+        from("$buildDir/classes/main")
+    }
+
+    //依赖管理
+    dependencies {
+        testCompile("junit:junit:$junit_version",
+                "org.hamcrest:hamcrest-all:$hamcrest_version",
+                "com.jayway.jsonpath:json-path:0.8.1")
+        //容器相关
+        compile("javax.servlet:javax.servlet-api:3.1.0",
+                "javax.servlet.jsp:jsp-api:2.2.1-b03")
+        // Spring
+        compile("org.springframework:spring-beans:$spring_version",
+                "org.springframework:spring-core:$spring_version",
+                "org.springframework:spring-aop:$spring_version",
+                "org.springframework:spring-orm:$spring_version",
+                "org.springframework:spring-jdbc:$spring_version",
+                "org.springframework:spring-expression:$spring_version",
+                "org.springframework:spring-context-support:$spring_version",
+                "org.springframework:spring-context:$spring_version",
+                "org.springframework:spring-aspects:$spring_version",
+                "org.springframework:spring-web:$spring_version",
+                "org.springframework:spring-webmvc:$spring_version",
+                "org.springframework:spring-tx:$spring_version",
+                "org.springframework:spring-test:$spring_version",
+                "org.springframework:spring-jms:$spring_version",
+                "org.springframework:spring-oxm:$spring_version")
+        //hibernate
+        compile("org.hibernate:hibernate-core:$hibernate_version",
+                "org.hibernate:hibernate-ehcache:$hibernate_version",
+                "org.hibernate:hibernate-proxool:$hibernate_version",
+                "org.hibernate.common:hibernate-commons-annotations:$hibernate_common_annotations_version",
+                "org.hibernate.javax.persistence:hibernate-jpa-2.0-api:$hibernate_jpa_version")
+        //java生成缩略图
+        compile("net.coobird:thumbnailator:$thumbnailator_version",
+                "org.jboss:jboss-vfs:3.1.0.Final")
+
+        //数据库相关组件
+        compile(name:'ojdbc14-10.2.0.5.0', ext:'jar') //oracle目前maven库已经移除
+        compile(name:'jdbc2005-1.0.0', ext:'jar') //sqlServer
+        compile("com.cloudhopper.proxool:proxool:$proxool_version") {
+            exclude group: 'geronimo-spec', module: 'geronimo-spec-javamail'
+            exclude group: 'avalon-framework', module: 'avalon-framework-api'
+            exclude group: 'com.cloudhopper.proxool', module: 'proxool-cglib'
+        }
+        compile("com.alibaba:druid:$druid_version",
+                //"com.oracle:ojdbc5:$ojdbc5_version",
+                "mysql:mysql-connector-java:$mysql_version",
+                "commons-pool:commons-pool:$commons_pool_version",
+                "commons-dbcp:commons-dbcp:$commons_dbcp_version")
+        //辅助依赖包
+        compile("cglib:cglib-nodep:$cglib_version",
+                "org.aspectj:aspectjrt:$aspectj_version",
+                "org.aspectj:aspectjweaver:$aspectj_version",
+                "org.jodd:jodd:$jodd_version",
+                "org.javassist:javassist:$javassist_version",
+                "ant:ant:$ant_version",
+                "aopalliance:aopalliance:$aopalliance_version",
+                "javax.activation:activation:$activation_version",
+                "jstl:jstl:1.2")
+        //JSON
+        compile(name:'json-lib-2.1-jdk15', ext:'jar')
+        compile("org.codehaus.jackson:jackson-mapper-asl:$jackson_version",
+                "org.codehaus.jackson:jackson-core-asl:$jackson_version",
+                "net.sf.ezmorph:ezmorph:$ezmorph_version",
+                "com.google.code.gson:gson:$gson_version")
+        //dom4j
+        compile("dom4j:dom4j:$dom4j_version"){
+            exclude group: 'xml-apis', module: 'xml-apis'
+        }
+        //slf4j
+        compile("org.slf4j:slf4j-api:$slf4j_version",
+                "org.slf4j:slf4j-log4j12:$slf4j_version")
+        //log4j
+        compile("log4j:log4j:$log4j_version")
+
+        //classmate
+        compile("com.fasterxml:classmate:$classmate_version")
+
+        //commons-beanutils
+        compile("commons-beanutils:commons-beanutils:$commons_beanutils_version"){
+            exclude group: 'commons-logging', module: 'commons-logging'
+        }
+        //commons-collections
+        compile("commons-collections:commons-collections:$commons_collections_version"){
+            exclude group: 'org.springframework', module: 'spring-beans'
+            exclude group: 'org.springframework', module: 'spring-core'
+        }
+        //commons组件
+        compile("commons-chain:commons-chain:$commons_chain_version",
+                "commons-codec:commons-codec:$commons_codec_version",
+                "commons-digester:commons-digester:$commons_digester_version",
+                "commons-io:commons-io:$commons_io_version",
+                "commons-httpclient:commons-httpclient:3.0.1",
+                "commons-fileupload:commons-fileupload:$commons_fileupload_version",
+                "commons-logging:commons-logging-api:$commons_logging_api_version",
+                "commons-validator:commons-validator:$commons_validator_version",
+                "commons-lang:commons-lang:$commons_lang_version",
+                "org.apache.commons:commons-lang3:$commons_lang3_version",
+                "org.apache.commons:commons-email:$commons_email_version"
+        )
+        compile("commons-logging:commons-logging:$commons_logging_version"){
+            exclude group: 'javax.servlet', module: 'servlet-api'
+        }
+        //ehcache
+        compile("net.sf.ehcache:ehcache-core:$ehcache_version")
+
+        //JSR303 Bean Validator
+        compile("org.hibernate:hibernate-validator:$hibernate_validator_version",
+                "org.hibernate:hibernate-validator-annotation-processor:$hibernate_validator_version")
+        //poi
+        compile("org.apache.poi:poi:$poi_version",
+                "org.apache.poi:poi-ooxml:$poi_version",
+                "org.apache.poi:poi-ooxml-schemas:$poi_version",
+                "org.apache.poi:poi-scratchpad:$poi_version")
+        //openOffice
+        compile("org.openoffice:juh:$openoffice_version",
+                "org.openoffice:unoil:$openoffice_version",
+                "org.openoffice:jurt:$openoffice_version",
+                "com.opensymphony:xwork-core:$xwork_core_version")
+
+        //Xml数据导出导入
+        compile("xerces:xercesImpl:2.7.1",
+                "xml-apis:xml-apis-ext:1.3.04",
+                "xml-apis:xml-apis:1.3.04",
+                "org.apache.xmlgraphics:xmlgraphics-commons:1.4",
+                "xalan:xalan:2.7.0")
+
+        compile("com.thoughtworks.xstream:xstream:$xstream_version",
+                "org.codehaus.groovy:groovy:$groovy_version",
+                "org.apache.geronimo.specs:geronimo-javamail_1.4_spec:1.6")
+
+        //jsoup HTML parser library @ http://jsoup.org/
+        compile("org.jsoup:jsoup:1.8.3")
+
+        //google 工具类
+        compile("com.google.guava:guava:$guava_version")
+
+        //kisso
+        compile("com.baomidou:kisso:3.6.11","com.alibaba:fastjson:1.2.15")
+
+        //腾讯云
+        compile("com.qcloud:cos_api:4.4",
+                "org.apache.httpcomponents:httpcore:4.4.3",
+                "org.apache.httpcomponents:httpmime:4.5.1",
+                "org.apache.httpcomponents:httpclient:4.5.1")
+
+        //私服上传包
+        compile(name:'batik-all-1.6', ext:'jar')//highchart 图片导出
+        compile(name:'fop-1.0', ext:'jar')
+        compile(name:'freemarker-null-2.3.19', ext:'jar') //freemarker
+        compile(name:'jodconverter-3.0-beta-4', ext:'jar')//java的OpenDucument文件转换器，它利用OpenOffice来进行转换工作
+        compile(name:'org.quartz-1.6.2', ext:'jar')
+        compile(name:'pinyin4j-2.5.0', ext:'jar')
+        compile(name:'jacob-1.0.0', ext:'jar')
+    }
+}

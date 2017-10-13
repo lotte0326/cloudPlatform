@@ -1,0 +1,21 @@
+INSERT  INTO
+	jp_inner_mail_receiver
+      ( 
+      id                            
+      ,create_date                    
+      ,update_date                    
+      ,mail_id                        
+      ,user_id                        
+      ,status
+      ,isdelete
+      ) 
+values
+      (
+      :p3MailJformInnerMailReceiver.id
+      ,:p3MailJformInnerMailReceiver.createDate
+      ,:p3MailJformInnerMailReceiver.updateDate
+      ,:p3MailJformInnerMailReceiver.mailId
+      ,:p3MailJformInnerMailReceiver.userId
+      ,:p3MailJformInnerMailReceiver.status
+      ,:p3MailJformInnerMailReceiver.isdelete
+      )
