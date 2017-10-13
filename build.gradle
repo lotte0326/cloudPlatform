@@ -143,6 +143,7 @@ subprojects {
                 "org.springframework:spring-context:$spring_version",
                 "org.springframework:spring-aspects:$spring_version",
                 "org.springframework:spring-web:$spring_version",
+                "org.springframework:spring-websocket:$spring_version",
                 "org.springframework:spring-webmvc:$spring_version",
                 "org.springframework:spring-tx:$spring_version",
                 "org.springframework:spring-test:$spring_version",
