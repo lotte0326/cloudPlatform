@@ -35,5 +35,6 @@ project(':web') {
         compile project(':p3_biz_demo') //插件：例子
         compile project(':p3_ui')
         compile project(':p3_bizcore')
+        providedCompile('javax.websocket:javax.websocket-api:1.1')
     }
 }
