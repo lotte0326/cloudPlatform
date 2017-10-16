@@ -7,20 +7,17 @@ import com.jeecg.chat.entity.SocketUser;
 import com.jeecg.chat.service.ChatMessageHistoryService;
 import com.jeecg.chat.service.ImService;
 import com.jeecg.chat.service.impl.UserManager;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
 import org.jeecgframework.p3.core.logger.Logger;
 import org.jeecgframework.p3.core.logger.LoggerFactory;
 import org.jeecgframework.p3.core.utils.common.ApplicationContextUtil;
 import org.springframework.context.ApplicationContext;
+
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 @ServerEndpoint("/WebSocket/{id}")
 public class WebSocket {

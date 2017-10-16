@@ -3,9 +3,9 @@
 project(':p3_biz_chat') {
     group 'com.cloud'
     version '1.0-SNAPSHOT'
-    apply plugin: 'war'
 
     dependencies {
         compile project(':sys_biz')
+        compile('javax.websocket:javax.websocket-api:1.1')
     }
 }
